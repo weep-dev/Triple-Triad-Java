@@ -89,6 +89,8 @@ public class PlayerCards extends JPanel {
                 } else {
                     father.getSoundServices().getSoundService("card-placed").play();
                     removeSelected();
+                    father.addTurn();
+                    father.switchTurn();
                 }
             }
         });

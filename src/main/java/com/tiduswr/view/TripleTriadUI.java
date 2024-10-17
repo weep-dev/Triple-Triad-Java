@@ -51,6 +51,10 @@ public class TripleTriadUI extends JFrame {
      * Painel que contém as cartas do jogador 2.
      */
     private PlayerCards p2;
+    /**
+     * Variavel que controla o turno
+     */
+    private static int turn = 0;
 
     /**
      * Largura do log de jogadas.
@@ -153,9 +157,10 @@ public class TripleTriadUI extends JFrame {
         Player maria = new Player("Maria", cardsP2, Color.decode("#C96868")); // Jogador 2
         p1 = new PlayerCards(this, jose, plW, plH);
         p2 = new PlayerCards(this, maria, plW, plH);
-        p2.setCardsActive(false); // Exemplo de como desabilitar a mão de um jogador (pra você ficar mudando os turnos)
+        
+        p2.setCardsActive(false);
         p2.processAllPlayerCardData((indice, carta) -> {
-            carta.setFlipped(indice % 2 == 0); // Exemplo de como você pode definir quais cartas vão ficar viradas pra baixo
+            carta.setFlipped(true); 
         });
 
         JPanel scorePanel = new ScorePanel(p1.getPlayer(), p2.getPlayer());
@@ -285,5 +290,37 @@ public class TripleTriadUI extends JFrame {
      */
     public SoundServices getSoundServices() {
         return this.soundServices;
+    }
+    /**
+     * Altera a vez de quem pode jogar, virando as cartas do adversário.
+     */
+    public void switchTurn(){
+
+        if(turn % 2 == 0){
+            p1.setCardsActive(true);
+            p2.setCardsActive(false);
+
+            p1.processAllPlayerCardData((indice, carta) -> {
+                carta.setFlipped(false); 
+            });
+            p2.processAllPlayerCardData((indice, carta) -> {
+                carta.setFlipped(true); 
+            });
+        }else{
+            p2.setCardsActive(true);
+            p1.setCardsActive(false);
+
+            p1.processAllPlayerCardData((indice, carta) -> {
+                carta.setFlipped(true); 
+            });
+            p2.processAllPlayerCardData((indice, carta) -> {
+                carta.setFlipped(false); 
+            });
+        }
+         
+    }
+
+    public void addTurn(){
+        turn++;
     }
 }
