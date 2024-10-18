@@ -17,7 +17,7 @@ public class Player {
      * Pontos iniciais do jogador.
      * O jogador começa com 5 pontos.
      */
-    private final int points = 5;
+    private int points = 5;
 
     /**
      * Lista de cartas que o jogador possui.
@@ -79,5 +79,19 @@ public class Player {
      */
     public Color getColor() {
         return this.color;
+    }
+
+    /**
+     * Incrementa 1 na quantidade de pontos
+     */
+    public void addPoints(){
+        points++;
+    }
+
+    /**
+     * Decrementa 1 na quantidade de pontos
+     */
+    public void dcrPoints(){
+        points--;
     }
 }

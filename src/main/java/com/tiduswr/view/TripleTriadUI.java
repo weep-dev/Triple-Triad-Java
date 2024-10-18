@@ -57,6 +57,11 @@ public class TripleTriadUI extends JFrame {
     private static int turn = 0;
 
     /**
+     * Painel de pontuação dos jogadores
+     */
+    private ScorePanel scorePanel;
+
+    /**
      * Largura do log de jogadas.
      */
     private final int glW;
@@ -153,17 +158,17 @@ public class TripleTriadUI extends JFrame {
             cardsP1.add(cards.get(random.nextInt(cards.size())));
             cardsP2.add(cards.get(random.nextInt(cards.size())));
         }
-        Player jose = new Player("José", cardsP1, Color.decode("#08C2FF")); // Jogador 1
-        Player maria = new Player("Maria", cardsP2, Color.decode("#C96868")); // Jogador 2
-        p1 = new PlayerCards(this, jose, plW, plH);
-        p2 = new PlayerCards(this, maria, plW, plH);
+        Player player1 = new Player("José", cardsP1, Color.decode("#08C2FF")); // Jogador 1
+        Player player2 = new Player("Maria", cardsP2, Color.decode("#C96868")); // Jogador 2
+        p1 = new PlayerCards(this, player1, plW, plH);
+        p2 = new PlayerCards(this, player2, plW, plH);
         
         p2.setCardsActive(false);
         p2.processAllPlayerCardData((indice, carta) -> {
             carta.setFlipped(true); 
         });
 
-        JPanel scorePanel = new ScorePanel(p1.getPlayer(), p2.getPlayer());
+        scorePanel = new ScorePanel(p1.getPlayer(), p2.getPlayer());
         scorePanel.setPreferredSize(new Dimension(spW, spH)); // Ajusta a altura do painel de pontuação
 
         // Cria o painel central que contém o tabuleiro e o log de jogadas
@@ -328,9 +333,9 @@ public class TripleTriadUI extends JFrame {
     }
 
     /**
-     * Regras que checa os espacos laterais
+     * Retorna o painel de pontos
      */
-    public void rules(){
-        
+    public ScorePanel getScore(){
+        return scorePanel;
     }
 }

@@ -89,9 +89,11 @@ public class PlayerCards extends JPanel {
                 } else {
                     father.getSoundServices().getSoundService("card-placed").play();
                     removeSelected();
+                    
                     father.addTurn();
                     father.switchTurn();
                 }
+                rules(father, row, col, selected);
             }
         });
     }
@@ -214,81 +216,109 @@ public class PlayerCards extends JPanel {
         return this.selectedIndex;
     }
     
-    public void rules(TripleTriadUI father, int row, int col){
-        var cardPlaced = getSelected();
-        
+    public void rules(TripleTriadUI father, int row, int col, PlayerCardData card) {
+    
         int sumRg = 0;
         int sumLf = 0;
         int sumUp = 0;
         int sumDw = 0;
-
-        if(father.getBoard().getBoardCards()[row][col+1] != null){
-            sumRg = cardPlaced.getCardData().getRight() + father.getBoard().getBoardCards()[row][col+1].getInfo().getCardData().getLeft();
+    
+        // Verificando se a posição à direita não é nula e se tem um getInfo válido
+        if (col + 1 < father.getBoard().getBoardCards()[row].length 
+            && father.getBoard().getBoardCards()[row][col + 1] != null 
+            && father.getBoard().getBoardCards()[row][col + 1].getInfo() != null) {
+            sumRg = card.getCardData().getRight() + father.getBoard().getBoardCards()[row][col + 1].getInfo().getCardData().getLeft();
         }
-        if(father.getBoard().getBoardCards()[row][col-1] != null){
-            sumLf = cardPlaced.getCardData().getLeft() + father.getBoard().getBoardCards()[row][col-1].getInfo().getCardData().getRight();
+    
+        // Verificando se a posição à esquerda não é nula e se tem um getInfo válido
+        if (col - 1 >= 0 
+            && father.getBoard().getBoardCards()[row][col - 1] != null 
+            && father.getBoard().getBoardCards()[row][col - 1].getInfo() != null) {
+            sumLf = card.getCardData().getLeft() + father.getBoard().getBoardCards()[row][col - 1].getInfo().getCardData().getRight();
         }
-        if(father.getBoard().getBoardCards()[row-1][col] != null){
-            sumUp = cardPlaced.getCardData().getUp() + father.getBoard().getBoardCards()[row-1][col].getInfo().getCardData().getDown();
+    
+        // Verificando se a posição acima não é nula e se tem um getInfo válido
+        if (row - 1 >= 0 
+            && father.getBoard().getBoardCards()[row - 1][col] != null 
+            && father.getBoard().getBoardCards()[row - 1][col].getInfo() != null) {
+            sumUp = card.getCardData().getUp() + father.getBoard().getBoardCards()[row - 1][col].getInfo().getCardData().getDown();
         }
-        if(father.getBoard().getBoardCards()[row+1][col] != null){
-            sumDw = cardPlaced.getCardData().getDown() + father.getBoard().getBoardCards()[row+1][col].getInfo().getCardData().getUp();
+    
+        // Verificando se a posição abaixo não é nula e se tem um getInfo válido
+        if (row + 1 < father.getBoard().getBoardCards().length 
+            && father.getBoard().getBoardCards()[row + 1][col] != null 
+            && father.getBoard().getBoardCards()[row + 1][col].getInfo() != null) {
+            sumDw = card.getCardData().getDown() + father.getBoard().getBoardCards()[row + 1][col].getInfo().getCardData().getUp();
         }
-
-        if(sumRg == sumUp && sumRg != 0 && sumUp != 0){}
-            if(father.getBoard().getBoardCards()[row-1][col].getInfo().getOwner() != player){
-                father.getBoard().getBoardCards()[row-1][col].getInfo().setOwner(player);
+    
+        // Implementação das regras baseada nas somas calculadas
+        if (sumRg == sumUp && sumRg != 0 && sumUp != 0) {
+            if (father.getBoard().getBoardCards()[row - 1][col].getInfo() != null && father.getBoard().getBoardCards()[row - 1][col].getInfo().getOwner() != player) {
+                father.getBoard().getBoardCards()[row - 1][col].getInfo().setOwner(player);
             }    
-            if(tabuleiro.mat[linha][coluna+1].dono != carta.dono){
-                tabuleiro.mat[linha][coluna+1].dono = carta.dono
+            if (father.getBoard().getBoardCards()[row][col + 1].getInfo() != null && father.getBoard().getBoardCards()[row][col + 1].getInfo().getOwner() != player) {
+                father.getBoard().getBoardCards()[row][col + 1].getInfo().setOwner(player);
             }
         }
-        if(somaEq == somaBx and somaEq != 0 and somaBx != 0):
-            if(tabuleiro.mat[linha][coluna-1].dono != carta.dono):
-                tabuleiro.mat[linha][coluna-1].dono = carta.dono
+        if (sumLf == sumDw && sumLf != 0 && sumDw != 0) {
+            if (father.getBoard().getBoardCards()[row][col - 1].getInfo() != null && father.getBoard().getBoardCards()[row][col - 1].getInfo().getOwner() != player) {
+                father.getBoard().getBoardCards()[row][col - 1].getInfo().setOwner(player);
+            }
+            if (father.getBoard().getBoardCards()[row + 1][col].getInfo() != null && father.getBoard().getBoardCards()[row + 1][col].getInfo().getOwner() != player) {
+                father.getBoard().getBoardCards()[row + 1][col].getInfo().setOwner(player);
+            }
+        }
+    
+        // Regras individuais para a direita, esquerda, cima, baixo com verificações nulas
+        if (col + 1 < father.getBoard().getBoardCards()[row].length 
+            && father.getBoard().getBoardCards()[row][col + 1] != null 
+            && father.getBoard().getBoardCards()[row][col + 1].getInfo() != null
+            && card.getCardData().getRight() > father.getBoard().getBoardCards()[row][col + 1].getInfo().getCardData().getLeft() 
+            && player != father.getBoard().getBoardCards()[row][col + 1].getInfo().getOwner()) {
+    
+            father.getBoard().getBoardCards()[row][col + 1].getInfo().setOwner(player);
+            attScores(father, player);
+        }
+    
+        if (col - 1 >= 0 
+            && father.getBoard().getBoardCards()[row][col - 1] != null 
+            && father.getBoard().getBoardCards()[row][col - 1].getInfo() != null
+            && card.getCardData().getLeft() > father.getBoard().getBoardCards()[row][col - 1].getInfo().getCardData().getRight() 
+            && player != father.getBoard().getBoardCards()[row][col - 1].getInfo().getOwner()) {
+    
+            father.getBoard().getBoardCards()[row][col - 1].getInfo().setOwner(player);
+            attScores(father, player);
+        }
+    
+        if (row - 1 >= 0 
+            && father.getBoard().getBoardCards()[row - 1][col] != null 
+            && father.getBoard().getBoardCards()[row - 1][col].getInfo() != null
+            && card.getCardData().getUp() > father.getBoard().getBoardCards()[row - 1][col].getInfo().getCardData().getDown() 
+            && player != father.getBoard().getBoardCards()[row - 1][col].getInfo().getOwner()) {
+    
+            father.getBoard().getBoardCards()[row - 1][col].getInfo().setOwner(player);
+            attScores(father, player);
+        }
+    
+        if (row + 1 < father.getBoard().getBoardCards().length 
+            && father.getBoard().getBoardCards()[row + 1][col] != null 
+            && father.getBoard().getBoardCards()[row + 1][col].getInfo() != null
+            && card.getCardData().getDown() > father.getBoard().getBoardCards()[row + 1][col].getInfo().getCardData().getUp() 
+            && player != father.getBoard().getBoardCards()[row + 1][col].getInfo().getOwner()) {
+    
+            father.getBoard().getBoardCards()[row + 1][col].getInfo().setOwner(player);
+            attScores(father, player);
+        }
+    }
 
-            if(tabuleiro.mat[linha+1][coluna].dono != carta.dono):
-                tabuleiro.mat[linha+1][coluna].dono = carta.dono
-
-        if(not (tabuleiro.mat[linha][coluna+1] == None)):
-            if(carta.dir > tabuleiro.mat[linha][coluna+1].esq and carta.dono != tabuleiro.mat[linha][coluna+1].dono):
-                tabuleiro.mat[linha][coluna+1].dono = carta.dono
-                if(carta.dono >= 1 ):
-                    self.jogadores[1].pontos += 1
-                    self.jogadores[0].pontos -= 1
-                else: 
-                    self.jogadores[0].pontos += 1
-                    self.jogadores[1].pontos -= 1
-                
-        
-        if(not (tabuleiro.mat[linha][coluna-1] == None)):
-            if(carta.esq > tabuleiro.mat[linha][coluna-1].dir and carta.dono != tabuleiro.mat[linha][coluna-1].dono):
-                tabuleiro.mat[linha][coluna-1].dono = carta.dono
-                if(carta.dono >= 1 ):
-                    self.jogadores[1].pontos += 1
-                    self.jogadores[0].pontos -= 1
-                else: 
-                    self.jogadores[0].pontos += 1
-                    self.jogadores[1].pontos -= 1
-                    
-        if(not (tabuleiro.mat[linha-1][coluna] == None)):        
-            if(carta.cima > tabuleiro.mat[linha-1][coluna].baixo and carta.dono != tabuleiro.mat[linha-1][coluna].dono):
-                tabuleiro.mat[linha-1][coluna].dono = carta.dono
-                if(carta.dono >= 1 ):
-                    self.jogadores[1].pontos += 1
-                    self.jogadores[0].pontos -= 1
-                else: 
-                    self.jogadores[0].pontos += 1
-                    self.jogadores[1].pontos -= 1
-                    
-        if(not (tabuleiro.mat[linha+1][coluna] == None)):        
-            if(carta.baixo > tabuleiro.mat[linha+1][coluna].cima and carta.dono != tabuleiro.mat[linha+1][coluna].dono):
-                tabuleiro.mat[linha+1][coluna].dono = carta.dono
-                if(carta.dono >= 1 ):
-                    self.jogadores[1].pontos += 1
-                    self.jogadores[0].pontos -= 1
-                else: 
-                    self.jogadores[0].pontos += 1
-                    self.jogadores[1].pontos -= 1
+    private void attScores(TripleTriadUI father, Player player) {
+        if (player == father.getP1().getPlayer()) {
+            player.addPoints();
+            father.getP2().getPlayer().dcrPoints();
+        } else {
+            player.addPoints();
+            father.getP1().getPlayer().dcrPoints();
+        }
+        father.getScore().updateScores();
     }
 }
