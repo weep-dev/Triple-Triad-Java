@@ -213,5 +213,82 @@ public class PlayerCards extends JPanel {
     public int getSelectedIndex() {
         return this.selectedIndex;
     }
+    
+    public void rules(TripleTriadUI father, int row, int col){
+        var cardPlaced = getSelected();
+        
+        int sumRg = 0;
+        int sumLf = 0;
+        int sumUp = 0;
+        int sumDw = 0;
 
+        if(father.getBoard().getBoardCards()[row][col+1] != null){
+            sumRg = cardPlaced.getCardData().getRight() + father.getBoard().getBoardCards()[row][col+1].getInfo().getCardData().getLeft();
+        }
+        if(father.getBoard().getBoardCards()[row][col-1] != null){
+            sumLf = cardPlaced.getCardData().getLeft() + father.getBoard().getBoardCards()[row][col-1].getInfo().getCardData().getRight();
+        }
+        if(father.getBoard().getBoardCards()[row-1][col] != null){
+            sumUp = cardPlaced.getCardData().getUp() + father.getBoard().getBoardCards()[row-1][col].getInfo().getCardData().getDown();
+        }
+        if(father.getBoard().getBoardCards()[row+1][col] != null){
+            sumDw = cardPlaced.getCardData().getDown() + father.getBoard().getBoardCards()[row+1][col].getInfo().getCardData().getUp();
+        }
+
+        if(sumRg == sumUp && sumRg != 0 && sumUp != 0){}
+            if(father.getBoard().getBoardCards()[row-1][col].getInfo().getOwner() != player){
+                father.getBoard().getBoardCards()[row-1][col].getInfo().setOwner(player);
+            }    
+            if(tabuleiro.mat[linha][coluna+1].dono != carta.dono){
+                tabuleiro.mat[linha][coluna+1].dono = carta.dono
+            }
+        }
+        if(somaEq == somaBx and somaEq != 0 and somaBx != 0):
+            if(tabuleiro.mat[linha][coluna-1].dono != carta.dono):
+                tabuleiro.mat[linha][coluna-1].dono = carta.dono
+
+            if(tabuleiro.mat[linha+1][coluna].dono != carta.dono):
+                tabuleiro.mat[linha+1][coluna].dono = carta.dono
+
+        if(not (tabuleiro.mat[linha][coluna+1] == None)):
+            if(carta.dir > tabuleiro.mat[linha][coluna+1].esq and carta.dono != tabuleiro.mat[linha][coluna+1].dono):
+                tabuleiro.mat[linha][coluna+1].dono = carta.dono
+                if(carta.dono >= 1 ):
+                    self.jogadores[1].pontos += 1
+                    self.jogadores[0].pontos -= 1
+                else: 
+                    self.jogadores[0].pontos += 1
+                    self.jogadores[1].pontos -= 1
+                
+        
+        if(not (tabuleiro.mat[linha][coluna-1] == None)):
+            if(carta.esq > tabuleiro.mat[linha][coluna-1].dir and carta.dono != tabuleiro.mat[linha][coluna-1].dono):
+                tabuleiro.mat[linha][coluna-1].dono = carta.dono
+                if(carta.dono >= 1 ):
+                    self.jogadores[1].pontos += 1
+                    self.jogadores[0].pontos -= 1
+                else: 
+                    self.jogadores[0].pontos += 1
+                    self.jogadores[1].pontos -= 1
+                    
+        if(not (tabuleiro.mat[linha-1][coluna] == None)):        
+            if(carta.cima > tabuleiro.mat[linha-1][coluna].baixo and carta.dono != tabuleiro.mat[linha-1][coluna].dono):
+                tabuleiro.mat[linha-1][coluna].dono = carta.dono
+                if(carta.dono >= 1 ):
+                    self.jogadores[1].pontos += 1
+                    self.jogadores[0].pontos -= 1
+                else: 
+                    self.jogadores[0].pontos += 1
+                    self.jogadores[1].pontos -= 1
+                    
+        if(not (tabuleiro.mat[linha+1][coluna] == None)):        
+            if(carta.baixo > tabuleiro.mat[linha+1][coluna].cima and carta.dono != tabuleiro.mat[linha+1][coluna].dono):
+                tabuleiro.mat[linha+1][coluna].dono = carta.dono
+                if(carta.dono >= 1 ):
+                    self.jogadores[1].pontos += 1
+                    self.jogadores[0].pontos -= 1
+                else: 
+                    self.jogadores[0].pontos += 1
+                    self.jogadores[1].pontos -= 1
+    }
 }

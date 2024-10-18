@@ -317,10 +317,20 @@ public class TripleTriadUI extends JFrame {
                 carta.setFlipped(false); 
             });
         }
-         
+        
     }
 
+    /**
+     * Altera o turno
+     */
     public void addTurn(){
         turn++;
+    }
+
+    /**
+     * Regras que checa os espacos laterais
+     */
+    public void rules(){
+        
     }
 }
