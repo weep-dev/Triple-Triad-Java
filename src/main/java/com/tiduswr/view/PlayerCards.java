@@ -216,6 +216,13 @@ public class PlayerCards extends JPanel {
         return this.selectedIndex;
     }
     
+    /**
+     * Função que define como as regras vão funcionar.
+     * @param father A interface do jogo que contem o componente.
+     * @param row   Linha em que a carta foi jogada.
+     * @param col   Coluna em que a carta foi jogada.
+     * @param card  Carta que foi jogada.
+     */
     public void rules(TripleTriadUI father, int row, int col, PlayerCardData card) {
     
         int sumRg = 0;
@@ -223,35 +230,35 @@ public class PlayerCards extends JPanel {
         int sumUp = 0;
         int sumDw = 0;
     
-        // Verificando se a posição à direita não é nula e se tem um getInfo válido
+        
         if (col + 1 < father.getBoard().getBoardCards()[row].length 
             && father.getBoard().getBoardCards()[row][col + 1] != null 
             && father.getBoard().getBoardCards()[row][col + 1].getInfo() != null) {
             sumRg = card.getCardData().getRight() + father.getBoard().getBoardCards()[row][col + 1].getInfo().getCardData().getLeft();
         }
     
-        // Verificando se a posição à esquerda não é nula e se tem um getInfo válido
+        
         if (col - 1 >= 0 
             && father.getBoard().getBoardCards()[row][col - 1] != null 
             && father.getBoard().getBoardCards()[row][col - 1].getInfo() != null) {
             sumLf = card.getCardData().getLeft() + father.getBoard().getBoardCards()[row][col - 1].getInfo().getCardData().getRight();
         }
     
-        // Verificando se a posição acima não é nula e se tem um getInfo válido
+        
         if (row - 1 >= 0 
             && father.getBoard().getBoardCards()[row - 1][col] != null 
             && father.getBoard().getBoardCards()[row - 1][col].getInfo() != null) {
             sumUp = card.getCardData().getUp() + father.getBoard().getBoardCards()[row - 1][col].getInfo().getCardData().getDown();
         }
     
-        // Verificando se a posição abaixo não é nula e se tem um getInfo válido
+        
         if (row + 1 < father.getBoard().getBoardCards().length 
             && father.getBoard().getBoardCards()[row + 1][col] != null 
             && father.getBoard().getBoardCards()[row + 1][col].getInfo() != null) {
             sumDw = card.getCardData().getDown() + father.getBoard().getBoardCards()[row + 1][col].getInfo().getCardData().getUp();
         }
     
-        // Implementação das regras baseada nas somas calculadas
+        
         if (sumRg == sumUp && sumRg != 0 && sumUp != 0) {
             if (father.getBoard().getBoardCards()[row - 1][col].getInfo() != null && father.getBoard().getBoardCards()[row - 1][col].getInfo().getOwner() != player) {
                 father.getBoard().getBoardCards()[row - 1][col].getInfo().setOwner(player);
@@ -269,7 +276,7 @@ public class PlayerCards extends JPanel {
             }
         }
     
-        // Regras individuais para a direita, esquerda, cima, baixo com verificações nulas
+        
         if (col + 1 < father.getBoard().getBoardCards()[row].length 
             && father.getBoard().getBoardCards()[row][col + 1] != null 
             && father.getBoard().getBoardCards()[row][col + 1].getInfo() != null

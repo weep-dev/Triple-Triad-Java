@@ -202,4 +202,15 @@ public class Board extends BackgroundPanel {
     public List<PositionListener> getPositionListeners() {
         return this.positionListeners;
     }
+
+    public boolean isFull(){
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (boardButtons[i][j] == null) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
