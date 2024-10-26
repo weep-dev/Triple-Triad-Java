@@ -81,6 +81,10 @@ public class Player {
         return this.color;
     }
 
+    public void setCards(List<CardData> cards) {
+        this.cards = cards;
+    }
+
     /**
      * Incrementa 1 na quantidade de pontos
      */

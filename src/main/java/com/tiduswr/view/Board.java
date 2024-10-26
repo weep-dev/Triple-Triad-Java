@@ -154,7 +154,7 @@ public class Board extends BackgroundPanel {
     /**
      * Inicializa o tabuleiro criando os componentes de carta para cada posição.
      */
-    private void initializeBoard() {
+    public void initializeBoard() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 final int row = i;
@@ -206,7 +206,7 @@ public class Board extends BackgroundPanel {
     public boolean isFull(){
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (boardButtons[i][j] == null) {
+                if (boardButtons[i][j].getInfo() == null) {
                     return false;
                 }
             }

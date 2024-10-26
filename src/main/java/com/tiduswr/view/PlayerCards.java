@@ -12,6 +12,7 @@ import java.util.function.BiConsumer;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import com.tiduswr.model.CardData;
 import com.tiduswr.model.Player;
 import com.tiduswr.model.PlayerCardData;
 
@@ -52,10 +53,10 @@ public class PlayerCards extends JPanel {
         selectedIndex = -1;
         setLayout(new GridLayout(5, 1)); // Layout em grade para as cartas
         setPreferredSize(new Dimension(width, height)); // Define o tamanho preferido
-        // Adiciona componentes de carta ao painel
-        for (int i = 0; i < handSize; i++) {
+        List<CardData> cards = player.getCards();
+        for (int i = 0; i < 5; i++) {
             var index = i;
-            var cardData = player.getCards().get(index);
+            var cardData = cards.get(index);
             var playerCardData = new PlayerCardData(cardData, player, 0, false);
             var cardComponent = new CardComponent(playerCardData, e -> {
                 if (!cardsActive || playerCardData.isFlipped())
@@ -94,6 +95,10 @@ public class PlayerCards extends JPanel {
                     father.switchTurn();
                 }
                 rules(father, row, col, selected);
+
+                if (father.getBoard().isFull()) {
+                    father.showEndGameDialog();
+                }
             }
         });
     }

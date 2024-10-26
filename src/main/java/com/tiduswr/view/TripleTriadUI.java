@@ -61,6 +61,16 @@ public class TripleTriadUI extends JFrame {
      */
     private ScorePanel scorePanel;
 
+    /*
+     * Painel central que contém o tabuleiro e o log de jogadas.
+     */
+    private JPanel centerPanel;
+
+    /*
+     * Popups de fim de jogo (empate, vitória)
+     */
+    private EndGameDialog endGameDialog;
+
     /**
      * Largura do log de jogadas.
      */
@@ -143,50 +153,11 @@ public class TripleTriadUI extends JFrame {
         gameLog.setPreferredSize(new Dimension(glW, glH)); 
         gameLog.setBorder(BorderFactory.createTitledBorder("Log de Jogadas"));
 
-        // Wrapper para o tabuleiro do jogo
-        JPanel boardWrapper = new JPanel(new BorderLayout());
-        board = new Board("/back.png", cards);
-        boardWrapper.add(board, BorderLayout.CENTER);
-        boardWrapper.setBorder(BorderFactory.createTitledBorder("Campo"));
-
-        // MUDAR ESSA PARTE, POIS É APENAS PARA TESTES!!!
-        //Seleção aleatória de 5 cartas para cada jogador
-        List<CardData> cardsP1 = new ArrayList<>();
-        List<CardData> cardsP2 = new ArrayList<>();
-        Random random = new Random();
-        for (int i = 0; i < 5; i++) {
-            cardsP1.add(cards.get(random.nextInt(cards.size())));
-            cardsP2.add(cards.get(random.nextInt(cards.size())));
-        }
-        Player player1 = new Player("José", cardsP1, Color.decode("#08C2FF")); // Jogador 1
-        Player player2 = new Player("Maria", cardsP2, Color.decode("#C96868")); // Jogador 2
-        p1 = new PlayerCards(this, player1, plW, plH);
-        p2 = new PlayerCards(this, player2, plW, plH);
-        
-        p2.setCardsActive(false);
-        p2.processAllPlayerCardData((indice, carta) -> {
-            carta.setFlipped(true); 
-        });
-
-        scorePanel = new ScorePanel(p1.getPlayer(), p2.getPlayer());
-        scorePanel.setPreferredSize(new Dimension(spW, spH)); // Ajusta a altura do painel de pontuação
-
-        // Cria o painel central que contém o tabuleiro e o log de jogadas
-        JPanel centerPanel = new JPanel(new BorderLayout(0, 0));
-        centerPanel.add(scorePanel, BorderLayout.NORTH);
-        centerPanel.add(boardWrapper, BorderLayout.CENTER);
-        centerPanel.add(gameLog, BorderLayout.SOUTH);
-
-        // Adiciona os componentes à interface principal
-        add(centerPanel, BorderLayout.CENTER);
-        add(p1, BorderLayout.WEST);
-        add(p2, BorderLayout.EAST);
-
         // Configurações finais da janela
         setLocationRelativeTo(null);
         soundServices.getSoundService("main-theme").playThenLoop("theme-loop.wav");
-        
-        setVisible(true); //Deve ser o ultimo método chamado!
+
+        initialize(cards, null, null);
     }
 
     /**
@@ -300,7 +271,6 @@ public class TripleTriadUI extends JFrame {
      * Altera a vez de quem pode jogar, virando as cartas do adversário.
      */
     public void switchTurn(){
-
         if(turn % 2 == 0){
             p1.setCardsActive(true);
             p2.setCardsActive(false);
@@ -337,5 +307,105 @@ public class TripleTriadUI extends JFrame {
      */
     public ScorePanel getScore(){
         return scorePanel;
+    }
+
+    public void showEndGameDialog() {
+        endGameDialog.show();
+    }
+
+    public void resetGame() {
+        remove(p1);
+        remove(p2);
+        remove(centerPanel);
+
+        List<CardData> cards = board.getAllCards();
+        Player player1 = p1.getPlayer();
+        Player player2 = p2.getPlayer();
+
+        // MUDAR ESSA PARTE, POIS É APENAS PARA TESTES!!!
+        //Seleção aleatória de 5 cartas para cada jogador
+        List<CardData> cardsP1 = new ArrayList<>();
+        List<CardData> cardsP2 = new ArrayList<>();
+        Random random = new Random();        
+        for (int i = 0; i < 5; i++) {
+            cardsP1.add(cards.get(random.nextInt(cards.size())));
+            cardsP2.add(cards.get(random.nextInt(cards.size())));
+        }
+
+        player1.setCards(cardsP1);
+        player2.setCards(cardsP2);
+
+        initialize(cards, player1, player2);
+    }
+
+    public Player[] definePlayers(List<CardData> cards) {
+        // MUDAR ESSA PARTE, POIS É APENAS PARA TESTES!!!
+        //Seleção aleatória de 5 cartas para cada jogador
+        List<CardData> cardsP1 = new ArrayList<>();
+        List<CardData> cardsP2 = new ArrayList<>();
+        Random random = new Random();        
+        for (int i = 0; i < 5; i++) {
+            cardsP1.add(cards.get(random.nextInt(cards.size())));
+            cardsP2.add(cards.get(random.nextInt(cards.size())));
+        }
+
+        Player player1 = new Player("José", cardsP1, Color.decode("#08C2FF")); // Jogador 1
+        Player player2 = new Player("Maria", cardsP2, Color.decode("#C96868")); // Jogador 2
+        Player[] players = {player1, player2};
+
+        return players;
+    }
+
+    public void initialize(List<CardData> cards, Player player1, Player player2) {
+        if (p1 != null) {
+            remove(p1);
+        }
+
+        if (p2 != null) {
+            remove(p2);
+        }
+
+        if (centerPanel != null) {
+            remove(centerPanel);
+        }
+
+        if (player1 == null || player2 == null) {
+            Player[] players = definePlayers(cards);
+
+            player1 = players[0];
+            player2 = players[1];
+        }
+
+        // Wrapper para o tabuleiro do jogo
+        JPanel boardWrapper = new JPanel(new BorderLayout());
+        board = new Board("/back.png", cards);
+        boardWrapper.add(board, BorderLayout.CENTER);
+        boardWrapper.setBorder(BorderFactory.createTitledBorder("Campo"));
+
+        p1 = new PlayerCards(this, player1, plW, plH);
+        p2 = new PlayerCards(this, player2, plW, plH);
+
+        scorePanel = new ScorePanel(p1.getPlayer(), p2.getPlayer());
+        scorePanel.setPreferredSize(new Dimension(spW, spH)); // Ajusta a altura do painel de pontuação
+
+        // Cria o painel central que contém o tabuleiro e o log de jogadas
+        centerPanel = new JPanel(new BorderLayout(0, 0));
+        centerPanel.add(scorePanel, BorderLayout.NORTH);
+        centerPanel.add(boardWrapper, BorderLayout.CENTER);
+        centerPanel.add(gameLog, BorderLayout.SOUTH);
+
+        // Adiciona os componentes à interface principal
+        add(centerPanel, BorderLayout.CENTER);
+        add(p1, BorderLayout.WEST);
+        add(p2, BorderLayout.EAST);
+
+        // Configurações finais da janela
+        setLocationRelativeTo(null);
+        soundServices.getSoundService("main-theme").playThenLoop("theme-loop.wav");
+        endGameDialog = new EndGameDialog(this);
+
+        switchTurn();
+        
+        setVisible(true); //Deve ser o ultimo método chamado!
     }
 }
